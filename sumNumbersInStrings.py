@@ -16,11 +16,16 @@ lineCount = 0
 for line in Lines:
 	lineCount += 1 #print("Line{}: {}".format(count, line.strip()))
 	numberStringCount = 0
+	print("Oringinal String: "+line)
+	new_string = line
 	for numberString in NumbersString:
-		  new_string = line.replace(numberString, NumbersDigit[numberStringCount])
-				numberStringCount += 1
+		new_string = new_string.replace(numberString, NumbersDigit[numberStringCount])
+		numberStringCount += 1
+	print("New String: "+ new_string)
 	numberCount = 0
+	numbersInLine = []
 	for number in NumbersDigit:
 		idxs = indexes(new_string, number)
-		print("Number "+number+ " appears in line "+new_string+" at position(s) "+str(list(idxs)))
+		numbersInLine.append(list(idxs))
 		lineCount += 1
+	print("Numbers in line "+new_string+" at position(s) "+str(numbersInLine))
