@@ -1,0 +1,12 @@
+
+#Arrays
+
+
+#Read lines of file
+file_path = 'StringData.txt'
+with open(file_path, 'r', encoding='utf-8') as file:
+    Lines = file.readlines()
+count = 0
+for line in Lines:
+    count += 1
+    print("Line{}: {}".format(count, line.strip()))
