@@ -23,9 +23,6 @@ for line in Lines:
 	numberStringCount = 0
 	print("Original String: "+line)
 	new_string = line
-	#for numberString in NumbersString:
-	#	new_string = new_string.replace(numberString, NumbersDigit[numberStringCount])
-	#	numberStringCount += 1
 	numberCount = 0
 	smallestNumberPos = []
 	highestNumberPos = []
