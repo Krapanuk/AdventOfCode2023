@@ -1,3 +1,4 @@
+
 #Arrays
 NumbersDigit = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 SymbolPositions = []
@@ -11,10 +12,10 @@ NumberPositions = []
 
 #Definitions
 def isSymbol(character):
-	if character in NumbersDigit or character == '.' or character == '\n':
-		return False
-	else:
+	if character == '*':
 		return True
+	else:
+		return False
 
 #Definitions
 def isDigit(character):
@@ -66,6 +67,19 @@ def sumIfIsPartNumber(NumberPos):
 					found = 1
 	return sum
 
+def multiplyIfInGearRange(NumberPos):
+	sum = 0
+	for x in range(0, len(NumberPos)): #For every number in NumberPositions ...
+		found = 0
+		for y in range(1, len(NumberPos[x])): #... and each of their Positions
+			for s in range(0, len(SymbolPositions)):
+				if NumberPos[x][y] == [SymbolPositions[s][1], SymbolPositions[s][2]] and found == 0:
+					sum = sum + int(NumberPos[x][0])
+					found = 1
+	return sum
+
+
+
 #Read lines of file
 file_path = 'AOC031223input.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
@@ -87,4 +101,4 @@ for line in Lines:
 				skipCount = getNumberAndPos(line[characterCount:], lineCount, characterCount)-1 #Call getNumberPos with substring from actual position to the end of the line
 		characterCount += 1
 	lineCount += 1
-print(str(sumIfIsPartNumber(NumberPositions))) 
+print(str(sumIfIsPartNumber(NumberPositions))) #525119
