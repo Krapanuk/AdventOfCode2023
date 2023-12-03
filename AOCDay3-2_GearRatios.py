@@ -1,8 +1,8 @@
-
 #Arrays
 NumbersDigit = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 SymbolPositions = []
 NumberPositions = []
+GearPositions = []
 #This should look like:
 #[
 #[[234][Pos0:lineNumber,charPos]]
@@ -56,29 +56,24 @@ def addHitbox(arrayOfNumbersAndPos):
 		arrayOfNumbersAndPos.append([initialLineNr+1, arrayOfNumbersAndPos[i][1]])
 	return arrayOfNumbersAndPos
 
-def sumIfIsPartNumber(NumberPos):
+#Idea: Find those Symbols (only gears) with exactly 2 Party around them
+def multiplyIfInGearRange(SymbolPos):
+	Gears = []
 	sum = 0
-	for x in range(0, len(NumberPos)): #For every number in NumberPositions ...
-		found = 0
-		for y in range(1, len(NumberPos[x])): #... and each of their Positions
-			for s in range(0, len(SymbolPositions)):
-				if NumberPos[x][y] == [SymbolPositions[s][1], SymbolPositions[s][2]] and found == 0:
-					sum = sum + int(NumberPos[x][0])
-					found = 1
+	for s in range(0, len(SymbolPos)): #For every symbol (only gears) in SymbolPositions ...
+		partCount = 0
+		Gears = []
+		for x in range(0, len(NumberPositions)):   #iterate trough all parts... (x = NumberCount)
+			for y in range(1, len(NumberPositions[x])): #... and each of their surrounding Positions (y = PositionCount in NumberCount)
+				if NumberPositions[x][y] == [SymbolPos[s][1], SymbolPos[s][2]]: 
+					partCount += 1
+					Gears.append(NumberPositions[x][0])
+		if partCount == 2:
+			prod = int(Gears[0]) * int(Gears[1])
+			sum = sum + prod
+			prod = 1
+			GearPositions.append([SymbolPos[s], Gears])
 	return sum
-
-def multiplyIfInGearRange(NumberPos):
-	sum = 0
-	for x in range(0, len(NumberPos)): #For every number in NumberPositions ...
-		found = 0
-		for y in range(1, len(NumberPos[x])): #... and each of their Positions
-			for s in range(0, len(SymbolPositions)):
-				if NumberPos[x][y] == [SymbolPositions[s][1], SymbolPositions[s][2]] and found == 0:
-					sum = sum + int(NumberPos[x][0])
-					found = 1
-	return sum
-
-
 
 #Read lines of file
 file_path = 'AOC031223input.txt'
@@ -101,4 +96,4 @@ for line in Lines:
 				skipCount = getNumberAndPos(line[characterCount:], lineCount, characterCount)-1 #Call getNumberPos with substring from actual position to the end of the line
 		characterCount += 1
 	lineCount += 1
-print(str(sumIfIsPartNumber(NumberPositions))) #525119
+print(str(multiplyIfInGearRange(SymbolPositions)))
