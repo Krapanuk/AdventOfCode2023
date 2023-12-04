@@ -2,6 +2,7 @@
 NumbersDigit = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 WinningNumbers = [] #1st part of the line
 ElfsNumbers = [] #2nd part of the line
+MatchingNumbers = []
 
 #Definitions
 def isSeparator(character):
@@ -38,14 +39,26 @@ def countHitsPerLine(lineNumber): #Compare, for each line, the elfs numbers to t
 		if ElfsNumbers[lineNumber][numCount] in WinningNumbers[lineNumber]:
 			countWinningNrs += 1
 		numCount += 1
-	if countWinningNrs == 1:
-		cardValue = 1
-	elif countWinningNrs > 1:
-		cardValue = 2 ** (countWinningNrs-1)
-	return cardValue
+	MatchingNumbers.append([lineNumber, countWinningNrs, 1])
+	return countWinningNrs
+
+def escalates(MatchingNumbers):
+	countMatchingNrs = 0
+	for matchingNumber in MatchingNumbers: #For each line and number of macthes in MatchingNumbers
+		if MatchingNumbers[countMatchingNrs][1] > 0: # if there are more than 0 matches
+			for m in range(0, int(MatchingNumbers[countMatchingNrs][2])): #for the number of cards
+				for n in range(1, int(MatchingNumbers[countMatchingNrs][1])+1): #for the number of machtes
+					MatchingNumbers[countMatchingNrs+n][2] = int(MatchingNumbers[countMatchingNrs+n][2]) + 1 #add 1 Card
+		countMatchingNrs += 1
+	sum = 0
+	for match in MatchingNumbers: 
+		sum = sum + int(match[2])
+	print(MatchingNumbers)
+	return sum
 
 #Read lines of file
 file_path = 'AOC041223input.txt'
+#file_path = 'AOC041223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
 
@@ -68,4 +81,4 @@ for line in Lines:
 		characterCount += 1
 	sum = sum + countHitsPerLine(lineCount)
 	lineCount += 1
-print(sum) #21088
+print(escalates(MatchingNumbers))
