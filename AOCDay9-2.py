@@ -45,12 +45,12 @@ def result(startSum):
 		previousLinesFirstValue = 0
 		linesFirstValue = 0
 		length = len(ArrayOfAllLines[n][lenSubMain])-1
-		for m in range(0, lenSubMain+1): # For each of those Sub-IterationArrays, from the last to the 1st (lenSubMain-m) take its last element	
-			linesFirstValue = int(ArrayOfAllLines[n][lenSubMain-m][length+m]) 
+		for m in range(0, lenSubMain+1): # For each of those Sub-IterationArrays, from the last to the 1st (lenSubMain-m) take its last element		
+			linesFirstValue = int(ArrayOfAllLines[n][lenSubMain-m][0]) 
 			if m > 0: 
-				previousLinesFirstValue = int(ArrayOfAllLines[n][lenSubMain-m+1][length+m-1]) + previousLinesFirstValue
-			lineSum = linesFirstValue + previousLinesFirstValue
-			ArrayOfAllLines[n][lenSubMain-m].append(str(linesFirstValue + previousLinesFirstValue))
+				previousLinesFirstValue = int(ArrayOfAllLines[n][lenSubMain-m+1][0]) - previousLinesFirstValue
+			lineSum = linesFirstValue - previousLinesFirstValue
+			ArrayOfAllLines[n][lenSubMain-m].append(str(linesFirstValue - previousLinesFirstValue))
 		overallSum = overallSum + lineSum
 	return overallSum
 
@@ -88,4 +88,4 @@ for line in Lines: # Create ArrayOfAllLines
 	ArrayOfAllLines.append(addMissings(readString(line)))
 print(str(result(0)))
 
-#Result: 1995001648
+#Results: 988
