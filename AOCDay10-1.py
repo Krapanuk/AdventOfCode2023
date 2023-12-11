@@ -20,9 +20,9 @@ with open(file_path, 'r', encoding='utf-8') as file:
 
 def inArea(coor):
 	inArea = True
-	if coor[0] < 0 or coor[1] < 0:
+	if int(coor[0]) < 0 or int(coor[1]) < 0:
 		inArea = False
-	if coor[0] > len(PipeMap) or coor[1] > len(PipeMap[0]):
+	if int(coor[0]) > len(PipeMap) or int(coor[1]) > len(PipeMap[0]):
 		inArea = False
 	return inArea
 
@@ -78,6 +78,26 @@ def getNextCoorPosition(beforeCoor, actualCoor):
 	nextCoor = [str(horizCoor), str(verticCoor)]
 	return nextCoor
 
+def moveIteratively(startCoor):
+	beforeCoor = startCoor
+	horizCoor = int(startCoor[0]) + 1
+	verticCoor = int(startCoor[1])
+	actualCoor = [str(horizCoor), str(verticCoor)]
+	moveCount = 0
+	stop = False
+	while stop == False:
+		nextCoor = getNextCoorPosition(beforeCoor, actualCoor)
+		#print("Test: nextCoor: "+ str(nextCoor))
+		#print("Test: GetElementType: "+ getElementType(nextCoor))
+		#print("Test: possibleMove: "+ str(possibleMove(actualCoor, nextCoor)) +" ["+str(actualCoor)+"]["+str(nextCoor)+"]")
+		#print("Test: inArea: "+ str(inArea(nextCoor)))
+		if possibleMove(actualCoor, nextCoor) == True and inArea(nextCoor) == True and getElementType(nextCoor) != ".":
+			beforeCoor = actualCoor
+			actualCoor = nextCoor
+			moveCount += 1
+		else: stop = True
+	return str(moveCount)
+
 def findS(PipeMap):
 	lineCount = 0
 	sCoor = []
@@ -90,8 +110,8 @@ def findS(PipeMap):
 		lineCount += 1
 	return sCoor
 print("S-Position = "+str(findS(readString(Lines))))
-readString(Lines)
-
+#readString(Lines)
+print(moveIteratively(findS(readString(Lines))))
 
 #print("RESULT: "+str(steps))
 #Result: 
@@ -100,27 +120,30 @@ readString(Lines)
 #PositionChecks:
 #3,0 => 4,0 (L)
 if possibleMove(['3', '0'], ['4', '0']) == True:
-	print("Test: possibleMove ['3', '0'], ['4', '0']: Success!")
-else: print("Test: possibleMove: Error: ['3', '0'], ['4', '0'] (L)")
+	print("Testcase: possibleMove ['3', '0'], ['4', '0']: Success!")
+else: print("Testcase: possibleMove: Error: ['3', '0'], ['4', '0'] (L)")
 if possibleMove(['3', '0'], ['3', '1']) == False:
-	print("Test: possibleMove ['3', '0'], ['3', '1']: Success!")
-else: print("Test: possibleMove: Error: ['3', '0'], ['3', '1'] (F)")
+	print("Testcase: possibleMove ['3', '0'], ['3', '1']: Success!")
+else: print("Testcase: possibleMove: Error: ['3', '0'], ['3', '1'] (F)")
 if possibleMove(['4', '1'], ['4', '2']) == False:
-	print("Test: possibleMove ['4', '1'], ['4', '2']: Success!")
-else: print("Test: possibleMove: Error: ['4', '1'], ['4', '2'] (.))")
+	print("Testcase: possibleMove ['4', '1'], ['4', '2']: Success!")
+else: print("Testcase: possibleMove: Error: ['4', '1'], ['4', '2'] (.))")
 if possibleMove(['4', '0'], ['4', '1']) == True:
-	print("Test: possibleMove ['4', '0'], ['4', '1']: Success!")
-else: print("Test: possibleMove: Error: ['4', '0'], ['4', '1'] (J))")
+	print("Testcase: possibleMove ['4', '0'], ['4', '1']: Success!")
+else: print("Testcase: possibleMove: Error: ['4', '0'], ['4', '1'] (J))")
+if possibleMove(['3', '2'], ['3', '3']) == True:
+	print("Testcase: possibleMove ['3', '2'], ['3', '3']: Success!")
+else: print("Testcase: possibleMove: Error: ['3', '2'], ['3', '3'] (-))")
 
 #getNextMove:
 if getNextMove(['3', '0'], ['4', '0']) == "r":
-	print("Test: getNextMove: Success!")
-else: print("Test: getNextMove: Error: ['3', '0'], ['4', '0']: Is "+str(getNextMove(['3', '0'], ['4', '0']))+" and should be (r))")
+	print("Testcase: getNextMove: Success!")
+else: print("Testcase: getNextMove: Error: ['3', '0'], ['4', '0']: Is "+str(getNextMove(['3', '0'], ['4', '0']))+" and should be (r))")
 if getNextMove(['4', '0'], ['4', '1']) == "u":
-	print("Test: getNextMove: Success!")
-else: print("Test: getNextMove: Error: ['4', '0'], ['4', '1']: Is "+str(getNextMove(['4', '0'], ['4', '1']))+" and should be (u))")
+	print("Testcase: getNextMove: Success!")
+else: print("Testcase: getNextMove: Error: ['4', '0'], ['4', '1']: Is "+str(getNextMove(['4', '0'], ['4', '1']))+" and should be (u))")
 
 #getNextCoorPosition:
 if getNextCoorPosition(['4', '0'], ['4', '1']) == ['3', '1']:
-	print("Test: getNextCoorPosition: Success!")
-else: print("Test: getNextCoorPosition: Error: ['4', '0'], ['4', '1']: Is "+str(getNextCoorPosition(['4', '0'], ['4', '1']))+" and should be ['3', '1']")
+	print("Testcase: getNextCoorPosition: Success!")
+else: print("Testcase: getNextCoorPosition: Error: ['4', '0'], ['4', '1']: Is "+str(getNextCoorPosition(['4', '0'], ['4', '1']))+" and should be ['3', '1']")
