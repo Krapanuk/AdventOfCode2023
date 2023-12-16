@@ -6,15 +6,24 @@
 #7 is a 90-degree bend connecting south and west. => d,l
 #F is a 90-degree bend connecting south and east. => d,r
 
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
 #Arrays
 PipeMap = [] # All pipe positions
 PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S", ] #All positions of types 'o pipes
 PipeTypes = [["u", "d"], ["l", "r"], ["u", "r"], ["u", "l"], ["d", "l"], ["d", "r"], ["."], ["u", "d", "l", "r"], ] #All types 'o pipes
+EmptyArray = []
 
 #Definitions
 #Read lines of file
-file_path = 'AOC101223input.txt'
-#file_path = 'AOC101223sample.txt'
+#file_path = '\InputData\AOC101223input.txt'
+file_path = currentdir+'\InputData\AOC101223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
 
@@ -52,9 +61,6 @@ def possibleMove(beforeCoor, actualCoor):
 	element = getElementType(actualCoor)
 	possible = False 
 	pos = PipeTypePositions.index(element)
-	#print(str(getMoveDirection(beforeCoor, actualCoor)))
-	#print(str(PipeTypePositions.index(element)))
-	#print(str(PipeTypes[pos]))
 	if getMoveDirection(beforeCoor, actualCoor) in PipeTypes[pos]:
 		possible = True
 	return possible
@@ -64,14 +70,10 @@ def getNextMove(beforeCoor, actualCoor):
 	possible = False #3,0 => 3,1
 	pos = PipeTypePositions.index(element)
 	intermArray = PipeTypes[pos]
-	#print(str(intermArray))
-	#print(str(intermArray.index(getMoveDirection(beforeCoor, actualCoor))))
-	#print(str(getMoveDirection(beforeCoor, actualCoor)))
 	nextMoveDirection = ""
 	if getMoveDirection(beforeCoor, actualCoor) in intermArray:
 		if intermArray.index(getMoveDirection(beforeCoor, actualCoor)) == 0:
 			nextMoveDirection = intermArray[1]
-			#nextMoveDirection = intermArray.pop(intermArray.index(getMoveDirection(beforeCoor, actualCoor)))
 		elif intermArray.index(getMoveDirection(beforeCoor, actualCoor)) == 1: 
 			nextMoveDirection = intermArray[0]
 	return nextMoveDirection
@@ -80,7 +82,6 @@ def getNextCoorPosition(beforeCoor, actualCoor):
 	horizCoor = int(actualCoor[0])
 	verticCoor = int(actualCoor[1])
 	nextMovesDirection = getNextMove(beforeCoor, actualCoor)
-	#print("Coor: beforeCoor" + str(beforeCoor) +"actualCoor" + str(actualCoor))
 	if nextMovesDirection == "u": horizCoor -= 1 #Moving up means reducing the horizCoor
 	elif nextMovesDirection == "d": horizCoor += 1 #Moving down means increasing the horizCoor
 	elif nextMovesDirection == "l": verticCoor -= 1
@@ -90,17 +91,13 @@ def getNextCoorPosition(beforeCoor, actualCoor):
 
 def moveIteratively(startCoor):
 	beforeCoor = startCoor
-	horizCoor = int(startCoor[0])  # Add 1 or subtract 1
-	verticCoor = int(startCoor[1]) -1
+	horizCoor = int(startCoor[0]) +1 # Add 1 or subtract 1
+	verticCoor = int(startCoor[1]) # Add 1 or subtract 1
 	actualCoor = [str(horizCoor), str(verticCoor)]
 	moveCount = 0
 	stop = False
 	while stop == False:
 		nextCoor = getNextCoorPosition(beforeCoor, actualCoor)
-		print("Test: nextCoor: "+ str(nextCoor))
-		#print("Test: GetElementType: "+ getElementType(nextCoor))
-		#print("Test: possibleMove: "+ str(possibleMove(actualCoor, nextCoor)) +" ["+str(actualCoor)+"]["+str(nextCoor)+"]")
-		#print("Test: inArea: "+ str(inArea(nextCoor)))
 		if possibleMove(actualCoor, nextCoor) == True and inArea(nextCoor) == True and getElementType(nextCoor) != ".":
 			beforeCoor = actualCoor
 			actualCoor = nextCoor
@@ -120,39 +117,6 @@ def findS(PipeMap):
 		lineCount += 1
 	return sCoor
 print("S-Position = "+str(findS(readString(Lines))))
-#readString(Lines)
 print(moveIteratively(findS(readString(Lines))))
 
 #Result: (13225+1) / 2
-
-#Tests:
-#PositionChecks:
-#3,0 => 4,0 (L)
-if possibleMove(['3', '0'], ['4', '0']) == True:
-	print("Testcase: possibleMove ['3', '0'], ['4', '0']: Success!")
-else: print("Testcase: possibleMove: Error: ['3', '0'], ['4', '0'] (L)")
-if possibleMove(['3', '0'], ['3', '1']) == False:
-	print("Testcase: possibleMove ['3', '0'], ['3', '1']: Success!")
-else: print("Testcase: possibleMove: Error: ['3', '0'], ['3', '1'] (F)")
-if possibleMove(['4', '1'], ['4', '2']) == False:
-	print("Testcase: possibleMove ['4', '1'], ['4', '2']: Success!")
-else: print("Testcase: possibleMove: Error: ['4', '1'], ['4', '2'] (.))")
-if possibleMove(['4', '0'], ['4', '1']) == True:
-	print("Testcase: possibleMove ['4', '0'], ['4', '1']: Success!")
-else: print("Testcase: possibleMove: Error: ['4', '0'], ['4', '1'] (J))")
-if possibleMove(['3', '2'], ['3', '3']) == True:
-	print("Testcase: possibleMove ['3', '2'], ['3', '3']: Success!")
-else: print("Testcase: possibleMove: Error: ['3', '2'], ['3', '3'] (-))")
-
-#getNextMove:
-if getNextMove(['3', '0'], ['4', '0']) == "r":
-	print("Testcase: getNextMove: Success!")
-else: print("Testcase: getNextMove: Error: ['3', '0'], ['4', '0']: Is "+str(getNextMove(['3', '0'], ['4', '0']))+" and should be (r))")
-if getNextMove(['4', '0'], ['4', '1']) == "u":
-	print("Testcase: getNextMove: Success!")
-else: print("Testcase: getNextMove: Error: ['4', '0'], ['4', '1']: Is "+str(getNextMove(['4', '0'], ['4', '1']))+" and should be (u))")
-
-#getNextCoorPosition:
-if getNextCoorPosition(['4', '0'], ['4', '1']) == ['3', '1']:
-	print("Testcase: getNextCoorPosition: Success!")
-else: print("Testcase: getNextCoorPosition: Error: ['4', '0'], ['4', '1']: Is "+str(getNextCoorPosition(['4', '0'], ['4', '1']))+" and should be ['3', '1']")

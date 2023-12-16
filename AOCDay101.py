@@ -6,6 +6,14 @@
 #7 is a 90-degree bend connecting south and west. => d,l
 #F is a 90-degree bend connecting south and east. => d,r
 
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
 #Arrays
 PipeMap = [] # All pipe positions
 PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S", ] #All positions of types 'o pipes
@@ -13,8 +21,8 @@ PipeTypes = [["u", "d"], ["l", "r"], ["u", "r"], ["u", "l"], ["d", "l"], ["d", "
 
 #Definitions
 #Read lines of file
-file_path = 'AOC101223input.txt'
-#file_path = 'AOC101223sample.txt'
+#file_path = 'AOC101223input.txt'
+file_path = currentdir+'\InputData\AOC101223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
 
@@ -62,6 +70,8 @@ def possibleMove(beforeCoor, actualCoor):
 def getNextMove(beforeCoor, actualCoor):
 	element = getElementType(actualCoor)
 	possible = False #3,0 => 3,1
+	print("["+str(element)+"]")
+	print("["+str(PipeTypePositions.index(element))+"]")
 	pos = PipeTypePositions.index(element)
 	intermArray = PipeTypes[pos]
 	#print(str(intermArray))
@@ -90,8 +100,8 @@ def getNextCoorPosition(beforeCoor, actualCoor):
 
 def moveIteratively(startCoor):
 	beforeCoor = startCoor
-	horizCoor = int(startCoor[0])  # Add 1 or subtract 1
-	verticCoor = int(startCoor[1]) -1
+	horizCoor = int(startCoor[0]) -1 # Add 1 or subtract 1
+	verticCoor = int(startCoor[1]) # Add 1 or subtract 1
 	actualCoor = [str(horizCoor), str(verticCoor)]
 	moveCount = 0
 	stop = False
