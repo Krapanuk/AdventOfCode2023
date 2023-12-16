@@ -20,6 +20,7 @@ PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S", ] #All positions of
 PipeTypes = [["u", "d"], ["l", "r"], ["u", "r"], ["u", "l"], ["d", "l"], ["d", "r"], ["."], ["u", "d", "l", "r"], ] #All types 'o pipes
 OnlyPipeArray = []
 InvertedOnlyPipeArray = []
+VSqueezePipeArray = []
 
 #Definitions
 #Read lines of file
@@ -110,6 +111,7 @@ def moveIteratively(startCoor):
 		else: stop = True
 	writeOnlyPipeArrayToFile(OnlyPipeArray, "output.txt")
 	writeOnlyPipeArrayToFile(invertOnlyPipeArray(OnlyPipeArray), "outputInverted.txt")
+	writeOnlyPipeArrayToFile(vSqueezesInPipeArray(OnlyPipeArray), "outputvSqueezed.txt")
 	return str(moveCount)
 
 def findS(PipeMap):
@@ -146,6 +148,42 @@ def invertOnlyPipeArray(PArray):
 		InvertedOnlyPipeArray.append(Line)
 	return InvertedOnlyPipeArray
 
+def vSqueezesInPipeArray(PArray):
+	for n in range(0, len(PArray)): 
+		Line = []
+		m = 0
+		while m < len(PArray[n]):
+			if PArray[n][m] == "7" and m < len(PArray[n]):
+				if PArray[n][m+1] == "F":
+					Line.append("||")
+					m += 2
+				else:
+					Line.append(" ")
+					m += 1
+			elif PArray[n][m] == "|" and m < len(PArray[n]):
+				if PArray[n][m+1] == "|":
+					Line.append("||")
+					m += 2
+				else:
+					Line.append(" ")
+					m += 1
+			elif PArray[n][m] == "J" and m < len(PArray[n]):
+				if PArray[n][m+1] == "L":
+					Line.append("||")
+					m += 2
+				else:
+					Line.append(" ")
+					m += 1
+			elif PArray[n][m] == " ": 
+				Line.append("+")
+				m += 1
+			elif PArray[n][m] in PipeTypePositions: 
+				Line.append(" ")
+				m += 1
+			else: m += 1
+		VSqueezePipeArray.append(Line)
+	return VSqueezePipeArray
+
 def writePipeToArray(coor, char):
 	OnlyPipeArray[int(coor[0])][int(coor[1])] = char
 	return OnlyPipeArray
@@ -153,4 +191,8 @@ def writePipeToArray(coor, char):
 print("S-Position = "+str(findS(readString(Lines))))
 print(moveIteratively(findS(readString(Lines))))
 
-#Result: (13225+1) / 2
+#758 is too high
+#701 is too high
+#600 is too high
+#400 is not right
+#390 is not right
