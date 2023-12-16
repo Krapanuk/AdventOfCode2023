@@ -19,11 +19,12 @@ PipeMap = [] # All pipe positions
 PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S", ] #All positions of types 'o pipes
 PipeTypes = [["u", "d"], ["l", "r"], ["u", "r"], ["u", "l"], ["d", "l"], ["d", "r"], ["."], ["u", "d", "l", "r"], ] #All types 'o pipes
 OnlyPipeArray = []
+InvertedOnlyPipeArray = []
 
 #Definitions
 #Read lines of file
-#file_path = '\InputData\AOC101223input.txt'
-file_path = currentdir+'\InputData\AOC101223sample.txt'
+file_path = currentdir+'\InputData\AOC101223input.txt'
+#file_path = currentdir+'\InputData\AOC101223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
 
@@ -93,7 +94,7 @@ def moveIteratively(startCoor):
 	createOnlyPipeArray(PipeMap)
 	beforeCoor = startCoor
 	writePipeToArray(startCoor, "S")
-	horizCoor = int(startCoor[0]) +1 # Add 1 or subtract 1
+	horizCoor = int(startCoor[0]) -1 # Add 1 or subtract 1
 	verticCoor = int(startCoor[1]) # Add 1 or subtract 1
 	actualCoor = [str(horizCoor), str(verticCoor)]
 	moveCount = 0
@@ -103,10 +104,12 @@ def moveIteratively(startCoor):
 		if possibleMove(actualCoor, nextCoor) == True and inArea(nextCoor) == True and getElementType(nextCoor) != ".":
 			beforeCoor = actualCoor
 			actualCoor = nextCoor
-			writePipeToArray(actualCoor, "+")
+			#writePipeToArray(actualCoor, "+")
+			writePipeToArray(actualCoor, getElementType(actualCoor))
 			moveCount += 1
 		else: stop = True
-	writeOnlyPipeArrayToFile(OnlyPipeArray)
+	writeOnlyPipeArrayToFile(OnlyPipeArray, "output.txt")
+	writeOnlyPipeArrayToFile(invertOnlyPipeArray(OnlyPipeArray), "outputInverted.txt")
 	return str(moveCount)
 
 def findS(PipeMap):
@@ -121,10 +124,10 @@ def findS(PipeMap):
 		lineCount += 1
 	return sCoor
 
-def writeOnlyPipeArrayToFile(PArray):
-	with open("output.txt", "w") as txt_file:
+def writeOnlyPipeArrayToFile(PArray, filename):
+	with open(filename, "w") as txt_file:
 		for line in PArray:
-			txt_file.write(" ".join(line) + "\n")
+			txt_file.write("".join(line) + "\n")
 
 def createOnlyPipeArray(PipeMap):
 	for n in range(0, len(PipeMap)): 
@@ -133,6 +136,15 @@ def createOnlyPipeArray(PipeMap):
 			Line.append(" ")
 		OnlyPipeArray.append(Line)
 	return OnlyPipeArray
+
+def invertOnlyPipeArray(PArray):
+	for n in range(0, len(PArray)): 
+		Line = []
+		for m in range(0, len(PArray[n])):
+			if PArray[n][m] == " ": Line.append("+")
+			elif PArray[n][m] in PipeTypePositions: Line.append(" ")
+		InvertedOnlyPipeArray.append(Line)
+	return InvertedOnlyPipeArray
 
 def writePipeToArray(coor, char):
 	OnlyPipeArray[int(coor[0])][int(coor[1])] = char
