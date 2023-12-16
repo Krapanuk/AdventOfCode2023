@@ -18,7 +18,7 @@ sys.path.insert(0, parentdir)
 PipeMap = [] # All pipe positions
 PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S", ] #All positions of types 'o pipes
 PipeTypes = [["u", "d"], ["l", "r"], ["u", "r"], ["u", "l"], ["d", "l"], ["d", "r"], ["."], ["u", "d", "l", "r"], ] #All types 'o pipes
-EmptyArray = []
+OnlyPipeArray = []
 
 #Definitions
 #Read lines of file
@@ -90,7 +90,9 @@ def getNextCoorPosition(beforeCoor, actualCoor):
 	return nextCoor
 
 def moveIteratively(startCoor):
+	createOnlyPipeArray(PipeMap)
 	beforeCoor = startCoor
+	writePipeToArray(startCoor, "S")
 	horizCoor = int(startCoor[0]) +1 # Add 1 or subtract 1
 	verticCoor = int(startCoor[1]) # Add 1 or subtract 1
 	actualCoor = [str(horizCoor), str(verticCoor)]
@@ -101,8 +103,10 @@ def moveIteratively(startCoor):
 		if possibleMove(actualCoor, nextCoor) == True and inArea(nextCoor) == True and getElementType(nextCoor) != ".":
 			beforeCoor = actualCoor
 			actualCoor = nextCoor
+			writePipeToArray(actualCoor, "+")
 			moveCount += 1
 		else: stop = True
+	writeOnlyPipeArrayToFile(OnlyPipeArray)
 	return str(moveCount)
 
 def findS(PipeMap):
@@ -116,6 +120,24 @@ def findS(PipeMap):
 			sFound = True
 		lineCount += 1
 	return sCoor
+
+def writeOnlyPipeArrayToFile(PArray):
+	with open("output.txt", "w") as txt_file:
+		for line in PArray:
+			txt_file.write(" ".join(line) + "\n")
+
+def createOnlyPipeArray(PipeMap):
+	for n in range(0, len(PipeMap)): 
+		Line = []
+		for m in range(0, len(PipeMap[n])):
+			Line.append(" ")
+		OnlyPipeArray.append(Line)
+	return OnlyPipeArray
+
+def writePipeToArray(coor, char):
+	OnlyPipeArray[int(coor[0])][int(coor[1])] = char
+	return OnlyPipeArray
+
 print("S-Position = "+str(findS(readString(Lines))))
 print(moveIteratively(findS(readString(Lines))))
 

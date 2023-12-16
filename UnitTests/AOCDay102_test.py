@@ -6,9 +6,9 @@ import unittest
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-from AOCDay101 import possibleMove
-from AOCDay101 import getNextMove
-from AOCDay101 import getNextCoorPosition
+from AOCDay102 import possibleMove
+from AOCDay102 import getNextMove
+from AOCDay102 import getNextCoorPosition
 
 class TestStringMethods(unittest.TestCase):
 	def test_getNextMove3040(self):
