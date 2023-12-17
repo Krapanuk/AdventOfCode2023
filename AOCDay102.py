@@ -24,7 +24,7 @@ VSqueezePipeArray = []
 
 #Definitions
 #Read lines of file
-file_path = currentdir+'\InputData\AOC101223input.txt'
+file_path = currentdir+'/InputData/AOC101223input.txt'
 #file_path = currentdir+'\InputData\AOC101223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
@@ -110,6 +110,7 @@ def moveIteratively(startCoor):
 			moveCount += 1
 		else: stop = True
 	writeOnlyPipeArrayToFile(OnlyPipeArray, "output.txt")
+	writeOnlyPipeArrayToFile(fillBlanksInOnlyPipeArray(OnlyPipeArray), "outputWithoutBlanks.txt")
 	writeOnlyPipeArrayToFile(invertOnlyPipeArray(OnlyPipeArray), "outputInverted.txt")
 	writeOnlyPipeArrayToFile(vSqueezesInPipeArray(OnlyPipeArray), "outputvSqueezed.txt")
 	return str(moveCount)
@@ -137,6 +138,40 @@ def createOnlyPipeArray(PipeMap):
 		for m in range(0, len(PipeMap[n])):
 			Line.append(" ")
 		OnlyPipeArray.append(Line)
+	return OnlyPipeArray
+
+def fillBlanksInOnlyPipeArray1(OnlyPipeArray):
+	for n in range(0, len(OnlyPipeArray)): 
+		Line = []
+		for m in range(0, len(OnlyPipeArray[n])):	
+			if n == 0 and m == 0: OnlyPipeArray[0][0] = "0"
+			elif OnlyPipeArray[n-1][m] == "0" or OnlyPipeArray[n+1][m] == "0" or OnlyPipeArray[n][m-1] == "0" or OnlyPipeArray[n][m+1] == "0":
+				if OnlyPipeArray[n][m] not in PipeTypePositions:
+					OnlyPipeArray[n][m] = "0"
+	return OnlyPipeArray
+
+def fillBlanksInOnlyPipeArray(OnlyPipeArray):
+	runCount = 0
+	n = 0
+	m = 0
+	while n < len(OnlyPipeArray): 
+		while m < len(OnlyPipeArray[n]):
+			print("Counts n: "+str(n)+" and m: "+str(m))
+			if n == 0 and m == 0: 
+				OnlyPipeArray[0][0] = "0"
+			if OnlyPipeArray[n][m] == "0":
+				if n-1 > 0 and OnlyPipeArray[n-1][m] not in PipeTypePositions and OnlyPipeArray[n-1][m] != "0": 
+					OnlyPipeArray[n-1][m] = "0"
+					n -= 1
+				if n+1 < len(OnlyPipeArray) and OnlyPipeArray[n+1][m] not in PipeTypePositions and OnlyPipeArray[n+1][m] != "0": 
+					OnlyPipeArray[n+1][m] = "0"
+				if m-1 > 0 and OnlyPipeArray[n][m-1] not in PipeTypePositions and OnlyPipeArray[n][m-1] != "0": 
+					OnlyPipeArray[n][m-1] = "0"
+					m -= 1
+				if m+1 < len(OnlyPipeArray[n]) and OnlyPipeArray[n][m+1] not in PipeTypePositions and OnlyPipeArray[n][m+1] != "0": 
+					OnlyPipeArray[n][m+1] = "0"
+			m += 1
+		n += 1
 	return OnlyPipeArray
 
 def invertOnlyPipeArray(PArray):
