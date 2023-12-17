@@ -44,3 +44,4 @@ print("Number of Plus = "+str(countPlus(readString(Lines))))
 #701 is too high
 #600 is too high
 #400 is not right
+#390 is not right

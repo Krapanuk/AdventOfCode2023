@@ -13,7 +13,7 @@ Space = []
 #Definitions
 #Read lines of file
 #file_path = 'AOC101223input.txt'
-file_path = currentdir+'\InputData\AOC111223sample.txt'
+file_path = currentdir+'/InputData/AOC111223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
 
@@ -42,6 +42,7 @@ def expand(SpaceWithoutExpansion):
 			print("Column ["+str(charPos)+"] without #")
 			for lineNr in range (0,lineCount):
 				Expanded[lineNr] = Expanded[lineNr][:charPos] +"."+ Expanded[lineNr][charPos:]
+				#Expanded[lineNr][charPos] = ".."
 	writeToFile(Expanded,"AOC111223Output.txt")
 	return Expanded
 
