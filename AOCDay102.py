@@ -16,7 +16,7 @@ sys.path.insert(0, parentdir)
 
 #Arrays
 PipeMap = [] # All pipe positions
-PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S", ] #All positions of types 'o pipes
+PipeTypePositions = ["|", "-", "L", "J", "7", "F", ".", "S"] #All positions of types 'o pipes
 PipeTypes = [["u", "d"], ["l", "r"], ["u", "r"], ["u", "l"], ["d", "l"], ["d", "r"], ["."], ["u", "d", "l", "r"], ] #All types 'o pipes
 OnlyPipeArray = []
 InvertedOnlyPipeArray = []
@@ -111,8 +111,12 @@ def moveIteratively(startCoor):
 		else: stop = True
 	writeOnlyPipeArrayToFile(OnlyPipeArray, "output.txt")
 	writeOnlyPipeArrayToFile(fillBlanksInOnlyPipeArray(OnlyPipeArray), "outputWithoutBlanks.txt")
-	writeOnlyPipeArrayToFile(invertOnlyPipeArray(fillBlanksInOnlyPipeArray(OnlyPipeArray)), "outputInverted.txt")
-	writeOnlyPipeArrayToFile(vSqueezesInPipeArray(OnlyPipeArray), "outputvSqueezed.txt")
+	writeOnlyPipeArrayToFile(addLinesAndColumns(OnlyPipeArray), "outputWithoutBAndExp.txt")
+	writeOnlyPipeArrayToFile(fillBlanksInOnlyPipeArray(addLinesAndColumns(OnlyPipeArray)), "outputWithoutBAndExp2.txt")
+	#writeOnlyPipeArrayToFile(invertOnlyPipeArray(fillBlanksInOnlyPipeArray(OnlyPipeArray)), "outputInverted.txt")
+	#writeOnlyPipeArrayToFile(invertOnlyPipeArray(fillBlanksInOnlyPipeArray(addLinesAndColumns(OnlyPipeArray))), "outputInverted.txt")
+	writeOnlyPipeArrayToFile(removeLinesAndColumns(fillBlanksInOnlyPipeArray(addLinesAndColumns(OnlyPipeArray))), "outputRemoved.txt")
+	writeOnlyPipeArrayToFile(invertOnlyPipeArray(removeLinesAndColumns(fillBlanksInOnlyPipeArray(addLinesAndColumns(OnlyPipeArray)))), "outputInverted.txt")
 	return str(moveCount)
 
 def findS(PipeMap):
@@ -157,8 +161,55 @@ def fillBlanksInOnlyPipeArray(OnlyPipeArray):
 					OnlyPipeArray[i][j] = "0"
 	return OnlyPipeArray
 
+def addLinesAndColumns(PArray):
+	addedArray = []
+	for n in range(0, len(PArray)): # Add new empty line at every second line
+		Line = []
+		EmptyLine = []
+		for m in range(0, len(PArray[n])):
+			Line.append(PArray[n][m])
+			Line.append('*')
+			EmptyLine.append('*')
+			EmptyLine.append('*')
+		addedArray.append(Line)
+		addedArray.append(EmptyLine)	
+	return connectPipes(addedArray)
 
+def removeLinesAndColumns(PArray):
+	removedArray = []
+	modNr = 2
+	for n in range(0, len(PArray)): # Add new empty line at every second line
+		Line = []
+		EmptyLine = []
+		for m in range(0, len(PArray[n])):
+			if m % modNr == 0: Line.append(PArray[n][m])
+		if n % modNr == 0: removedArray.append(Line)	
+	return connectPipes(removedArray)
 
+def connectPipes(PArray):
+	for n in range(1, len(PArray)-1): 
+		for m in range(1, len(PArray[n])-1):
+			if PArray[n][m] == "*": 
+				if PArray[n][m-1] == "-" and PArray[n][m+1] == "-": PArray[n][m] = "-" # vertically (lines)
+				elif PArray[n][m-1] == "F" and PArray[n][m+1] == "7": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "F" and PArray[n][m+1] == "J": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "L" and PArray[n][m+1] == "7": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "L" and PArray[n][m+1] == "J": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "-" and PArray[n][m+1] == "J": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "-" and PArray[n][m+1] == "7": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "L" and PArray[n][m+1] == "-": PArray[n][m] = "-"
+				elif PArray[n][m-1] == "F" and PArray[n][m+1] == "-": PArray[n][m] = "-"
+
+				elif PArray[n-1][m] == "|" and PArray[n+1][m] == "|": PArray[n][m] = "|" # horizontally (columns)
+				elif PArray[n-1][m] == "|" and PArray[n+1][m] == "L": PArray[n][m] = "|" # u => d
+				elif PArray[n-1][m] == "|" and PArray[n+1][m] == "J": PArray[n][m] = "|"
+				elif PArray[n-1][m] == "7" and PArray[n+1][m] == "L": PArray[n][m] = "|"
+				elif PArray[n-1][m] == "7" and PArray[n+1][m] == "J": PArray[n][m] = "|"
+				elif PArray[n-1][m] == "7" and PArray[n+1][m] == "|": PArray[n][m] = "|"
+				elif PArray[n-1][m] == "F" and PArray[n+1][m] == "L": PArray[n][m] = "|"
+				elif PArray[n-1][m] == "F" and PArray[n+1][m] == "J": PArray[n][m] = "|"
+				elif PArray[n-1][m] == "F" and PArray[n+1][m] == "|": PArray[n][m] = "|"
+	return PArray
 
 def invertOnlyPipeArray(PArray):
 	for n in range(0, len(PArray)): 
@@ -169,42 +220,6 @@ def invertOnlyPipeArray(PArray):
 		InvertedOnlyPipeArray.append(Line)
 	return InvertedOnlyPipeArray
 
-def vSqueezesInPipeArray(PArray):
-	for n in range(0, len(PArray)): 
-		Line = []
-		m = 0
-		while m < len(PArray[n]):
-			if PArray[n][m] == "7" and m < len(PArray[n]):
-				if PArray[n][m+1] == "F":
-					Line.append("||")
-					m += 2
-				else:
-					Line.append(" ")
-					m += 1
-			elif PArray[n][m] == "|" and m < len(PArray[n]):
-				if PArray[n][m+1] == "|":
-					Line.append("||")
-					m += 2
-				else:
-					Line.append(" ")
-					m += 1
-			elif PArray[n][m] == "J" and m < len(PArray[n]):
-				if PArray[n][m+1] == "L":
-					Line.append("||")
-					m += 2
-				else:
-					Line.append(" ")
-					m += 1
-			elif PArray[n][m] == " ": 
-				Line.append("+")
-				m += 1
-			elif PArray[n][m] in PipeTypePositions: 
-				Line.append(" ")
-				m += 1
-			else: m += 1
-		VSqueezePipeArray.append(Line)
-	return VSqueezePipeArray
-
 def writePipeToArray(coor, char):
 	OnlyPipeArray[int(coor[0])][int(coor[1])] = char
 	return OnlyPipeArray
@@ -214,6 +229,7 @@ print(moveIteratively(findS(readString(Lines))))
 
 #758 is too high
 #701 is too high
+#681 is not right
 #600 is too high
 #400 is not right
 #390 is not right
