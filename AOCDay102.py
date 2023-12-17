@@ -111,7 +111,7 @@ def moveIteratively(startCoor):
 		else: stop = True
 	writeOnlyPipeArrayToFile(OnlyPipeArray, "output.txt")
 	writeOnlyPipeArrayToFile(fillBlanksInOnlyPipeArray(OnlyPipeArray), "outputWithoutBlanks.txt")
-	writeOnlyPipeArrayToFile(invertOnlyPipeArray(OnlyPipeArray), "outputInverted.txt")
+	writeOnlyPipeArrayToFile(invertOnlyPipeArray(fillBlanksInOnlyPipeArray(OnlyPipeArray)), "outputInverted.txt")
 	writeOnlyPipeArrayToFile(vSqueezesInPipeArray(OnlyPipeArray), "outputvSqueezed.txt")
 	return str(moveCount)
 
@@ -140,46 +140,32 @@ def createOnlyPipeArray(PipeMap):
 		OnlyPipeArray.append(Line)
 	return OnlyPipeArray
 
-def fillBlanksInOnlyPipeArray1(OnlyPipeArray):
+def fillBlanksInOnlyPipeArray(OnlyPipeArray):
 	for n in range(0, len(OnlyPipeArray)): 
-		Line = []
 		for m in range(0, len(OnlyPipeArray[n])):	
 			if n == 0 and m == 0: OnlyPipeArray[0][0] = "0"
 			elif OnlyPipeArray[n-1][m] == "0" or OnlyPipeArray[n+1][m] == "0" or OnlyPipeArray[n][m-1] == "0" or OnlyPipeArray[n][m+1] == "0":
 				if OnlyPipeArray[n][m] not in PipeTypePositions:
 					OnlyPipeArray[n][m] = "0"
+	for k in range(0, len(OnlyPipeArray)):
+		i = len(OnlyPipeArray) - k -1
+		for l in range(0, len(OnlyPipeArray[0])):
+			j = len(OnlyPipeArray[0]) - l -1
+			if i == len(OnlyPipeArray) and j == len(OnlyPipeArray[0]): print("Test")
+			if OnlyPipeArray[i-1][j] == "0" or OnlyPipeArray[i+1][j] == "0" or OnlyPipeArray[i][j-1] == "0" or OnlyPipeArray[i][j+1] == "0":
+				if OnlyPipeArray[i][j] not in PipeTypePositions:
+					OnlyPipeArray[i][j] = "0"
 	return OnlyPipeArray
 
-def fillBlanksInOnlyPipeArray(OnlyPipeArray):
-	runCount = 0
-	n = 0
-	m = 0
-	while n < len(OnlyPipeArray): 
-		while m < len(OnlyPipeArray[n]):
-			print("Counts n: "+str(n)+" and m: "+str(m))
-			if n == 0 and m == 0: 
-				OnlyPipeArray[0][0] = "0"
-			if OnlyPipeArray[n][m] == "0":
-				if n-1 > 0 and OnlyPipeArray[n-1][m] not in PipeTypePositions and OnlyPipeArray[n-1][m] != "0": 
-					OnlyPipeArray[n-1][m] = "0"
-					n -= 1
-				if n+1 < len(OnlyPipeArray) and OnlyPipeArray[n+1][m] not in PipeTypePositions and OnlyPipeArray[n+1][m] != "0": 
-					OnlyPipeArray[n+1][m] = "0"
-				if m-1 > 0 and OnlyPipeArray[n][m-1] not in PipeTypePositions and OnlyPipeArray[n][m-1] != "0": 
-					OnlyPipeArray[n][m-1] = "0"
-					m -= 1
-				if m+1 < len(OnlyPipeArray[n]) and OnlyPipeArray[n][m+1] not in PipeTypePositions and OnlyPipeArray[n][m+1] != "0": 
-					OnlyPipeArray[n][m+1] = "0"
-			m += 1
-		n += 1
-	return OnlyPipeArray
+
+
 
 def invertOnlyPipeArray(PArray):
 	for n in range(0, len(PArray)): 
 		Line = []
 		for m in range(0, len(PArray[n])):
 			if PArray[n][m] == " ": Line.append("+")
-			elif PArray[n][m] in PipeTypePositions: Line.append(" ")
+			elif PArray[n][m] in PipeTypePositions or PArray[n][m] == "0": Line.append(" ")
 		InvertedOnlyPipeArray.append(Line)
 	return InvertedOnlyPipeArray
 

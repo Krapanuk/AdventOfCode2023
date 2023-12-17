@@ -19,7 +19,8 @@ sys.path.insert(0, parentdir)
 
 #Definitions
 #Read lines of file
-file_path = currentdir+'\outputManuallyRefinedWithoutMiddle.txt'
+#file_path = currentdir+'\outputManuallyRefinedWithoutMiddle.txt'
+file_path = currentdir+'/outputInverted.txt'
 #file_path = currentdir+'\InputData\AOC101223sample.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
 	Lines = file.readlines()
