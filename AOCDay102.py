@@ -112,7 +112,7 @@ def moveIteratively(startCoor):
 	writeOnlyPipeArrayToFile(OnlyPipeArray, "output.txt")
 	writeOnlyPipeArrayToFile(fillBlanksInOnlyPipeArray(OnlyPipeArray), "outputWithoutBlanks.txt")
 	writeOnlyPipeArrayToFile(invertOnlyPipeArray(fillBlanksInOnlyPipeArray(OnlyPipeArray)), "outputInverted.txt")
-	writeOnlyPipeArrayToFile(vSqueezesInPipeArray(OnlyPipeArray), "outputvSqueezed.txt")
+	writeOnlyPipeArrayToFile(vSqueezesInPipeArray(fillBlanksInOnlyPipeArray(OnlyPipeArray)), "outputvSqueezed.txt")
 	return str(moveCount)
 
 def findS(PipeMap):
@@ -169,8 +169,8 @@ def invertOnlyPipeArray(PArray):
 		InvertedOnlyPipeArray.append(Line)
 	return InvertedOnlyPipeArray
 
-def vSqueezesInPipeArray(PArray):
-	for n in range(0, len(PArray)): 
+def vSqueezesInPipeArray1(PArray):
+	for n in range(1, len(PArray)): 
 		Line = []
 		m = 0
 		while m < len(PArray[n]):
@@ -205,8 +205,46 @@ def vSqueezesInPipeArray(PArray):
 		VSqueezePipeArray.append(Line)
 	return VSqueezePipeArray
 
+def vSqueezesInPipeArray(PArray):
+	for n in range(1, len(PArray)): 
+		Line = []
+		m = 0
+		while m < len(PArray[n]):
+			if PArray[n][m] == "7" and m < len(PArray[n]):
+				if PArray[n][m+1] == "F":
+					Line.append("||")
+					m += 2
+				else:
+					Line.append(" ")
+					m += 1
+			elif PArray[n][m] == "|" and m < len(PArray[n]):
+				if PArray[n][m+1] == "|":
+					Line.append("||")
+					m += 2
+				else:
+					Line.append(" ")
+					m += 1
+			elif PArray[n][m] == "J" and m < len(PArray[n]):
+				if PArray[n][m+1] == "L":
+					Line.append("||")
+					m += 2
+				else:
+					Line.append(" ")
+					m += 1
+			elif PArray[n][m] == " ": 
+				Line.append("+")
+				m += 1
+			elif PArray[n][m] in PipeTypePositions: 
+				Line.append(" ")
+				m += 1
+			else: m += 1
+		VSqueezePipeArray.append(Line)
+	return VSqueezePipeArray
+
+
 def writePipeToArray(coor, char):
 	OnlyPipeArray[int(coor[0])][int(coor[1])] = char
+	#Add here: Expand this array by "X"s surrounding each pipe!
 	return OnlyPipeArray
 
 print("S-Position = "+str(findS(readString(Lines))))
